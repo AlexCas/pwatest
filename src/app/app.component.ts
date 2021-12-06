@@ -1,44 +1,54 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, Inject, Renderer2 } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { SidenavService } from './layout/sidenav/sidenav.service';
-import { ThemeService } from '../@core/services/theme.service';
-import { ActivatedRoute } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { Platform } from '@angular/cdk/platform';
-import { SplashScreenService } from '../@core/services/splash-screen.service';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {PokemonService} from './shared/pokemon.service';
+import {HeaderComponent} from './header/header.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
 
-  constructor(private sidenavService: SidenavService,
-    private iconRegistry: MatIconRegistry,
-    private renderer: Renderer2,
-    private themeService: ThemeService,
-    @Inject(DOCUMENT) private document: Document,
-    private platform: Platform,
-    private route: ActivatedRoute,
-    private splashScreenService: SplashScreenService) {
-    this.route.queryParamMap.pipe(
-      filter(queryParamMap => queryParamMap.has('style'))
-    ).subscribe(queryParamMap => this.themeService.setStyle(queryParamMap.get('style')));
+  loaded = false;
+  @ViewChild('header') headerComponent: HeaderComponent;
 
-    this.iconRegistry.setDefaultFontSetClass('material-icons-outlined');
-    this.themeService.theme$.subscribe(theme => {
-      if (theme[0]) {
-        this.renderer.removeClass(this.document.body, theme[0]);
-      }
-
-      this.renderer.addClass(this.document.body, theme[1]);
+  constructor(private pokemonService: PokemonService) {
+    this.pokemonService.EverythingLoaded.subscribe(res => {
+      this.loaded = res;
     });
+  }
 
-    if (this.platform.BLINK) {
-      this.renderer.addClass(this.document.body, 'is-blink');
-    }
-
-
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.pokemonService.firstTime) {
+        const toast = this.pokemonService._notifications.success('Welcome To The PokéDex', 'Loading Data ...', {
+          timeOut: 0,
+          showProgressBar: true,
+          pauseOnHover: true,
+          clickToClose: true,
+        });
+        toast.click.subscribe((event) => {
+          const toast2 = this.pokemonService._notifications.info('Hate Waiting ?',
+            'Don\'t Worry, This app can work OFFLINE thereafter...', {
+            timeOut: 0,
+            showProgressBar: true,
+            pauseOnHover: true,
+            clickToClose: true,
+          });
+          toast2.click.subscribe((event2) => {
+            const toast2 = this.pokemonService._notifications.info('It\'s Installable too!', 'Images once loaded will be available for offline usage.', {
+              timeOut: 0,
+              showProgressBar: true,
+              pauseOnHover: true,
+              clickToClose: true,
+            });
+            toast2.click.subscribe((event3) => {
+              this.headerComponent.openMenu();
+            });
+          });
+        });
+      }
+    }, 100);
   }
 }
+

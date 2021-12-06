@@ -1,4 +1,0 @@
-{
-  "env": "PROD",
-  "apiBaseUrl": "http://windevvm.westus2.cloudapp.azure.com:88"
-}
