@@ -1,0 +1,50 @@
+export const data = {
+  factory: 'Tultitlan',
+  machines: [
+    {
+      warehouse: 'Nave 1',
+      machine: '111A',
+      scrapQuantity: 0.0,
+      scrapCost: 54.57,
+      gnlCostPercentage: 3.23,
+      completedQuantity: 15400,
+      gnlScrapPercentage: 0.0,
+      scrapCostPercentage: 100.0,
+      colorId: 100,
+      colorName: 'ROJO',
+      date: '2021-11-15T00:00:00Z',
+      hour: '10:31:39',
+    },
+  ],
+  warehouse: {
+    name: 'Nave 1',
+    items: [
+      {
+        machine: '111A',
+        scrapCost: 54.57,
+        scrapQuantity: 0.0,
+        gnlCostPercentage: 3.23,
+        scrapCostPercentage: 100.0,
+        completedQuantity: 15400,
+        gnlScrapPercentage: 0.0,
+        colorId: 100,
+        colorName: 'ROJO',
+        isInTop: true,
+        date: '2021-11-15T00:00:00Z',
+        hour: '10:31:39',
+      },
+    ],
+    moldeRazonItems: [
+      {
+        machine: '111A',
+        mold: 'I-1514',
+        reasonCode: 'SCRAP ARRANQUE',
+        articleNumber: 4.0,
+        scrapPercentage: 0.04,
+        scrapCost: 54.57,
+        date: '2021-11-15T00:00:00Z',
+        hour: '18:04:44',
+      },
+    ],
+  },
+};

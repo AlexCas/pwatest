@@ -1,0 +1,15 @@
+app-breadcrumbs {
+  .crumb,
+  .link {
+    color: $theme-secondary-text;
+
+    &:hover {
+      color: $theme-text;
+    }
+  }
+
+  .crumb.current,
+  .crumb.current .link {
+    color: $theme-text;
+  }
+}

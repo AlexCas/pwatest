@@ -1,0 +1,21 @@
+<mat-card class="mat-card-border">
+  <mat-card-title class="warehouse-title">{{ title }}</mat-card-title>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-6">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartOptionsWarehouseIndicators"
+          style="width: 100%; height: 33vh; display: block"
+        ></highcharts-chart>
+      </div>
+      <div class="col-6">
+        <highcharts-chart
+          [Highcharts]="Highcharts"
+          [options]="chartOptionsGauge"
+          style="width: 100%; height: 33vh; display: block"
+        ></highcharts-chart>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

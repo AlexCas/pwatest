@@ -1,0 +1,46 @@
+<div class="overflow-h">
+  <mat-card class="bg-container pb-0 pt-0 mt-0">
+    <mat-card-title class="d-flex justify-content-center title pb-0">
+      <app-tv-header class="w-100" title="Alertas de Calidad"></app-tv-header>
+    </mat-card-title>
+  </mat-card>
+  <mat-card class="mt-2 bg-container pt-0 pb-0 mb-0">
+    <mat-card-content>
+      <div class="row d-flex justify-content-center">
+        <div class="col-12 text-center factory-title">
+          <span class="factory-border">Planta Tultitlan - Nave 1</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="bg-container pt-0">
+    <mat-card-content *ngIf="qualityAlertsArray">
+      <div *ngFor="let alert of qualityAlertsArray; index as i">
+        <div class="row">
+          <div class="col-6">
+            <pdf-viewer
+              [src]="appUrl + '/' + alert[0].fileRoot + '/' + alert[0].fileName"
+              [render-text]="true"
+              [zoom]="0.734"
+              [show-all]="false"
+              [fit-to-page]="true"
+              [original-size]="true"
+              [style]="'display: ' + (actualIndex == i ? 'block;' : 'none;') + ' height: 87vh; width: 100%'"
+            ></pdf-viewer>
+          </div>
+          <div class="col-6">
+            <pdf-viewer
+              [src]="appUrl + '/' + alert[1].fileRoot + '/' + alert[1].fileName"
+              [render-text]="true"
+              [zoom]="0.734"
+              [show-all]="false"
+              [fit-to-page]="true"
+              [original-size]="true"
+              [style]="'display: ' + (actualIndex == i ? 'block;' : 'none;') + ' height: 87vh; width: 100%'"
+            ></pdf-viewer>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

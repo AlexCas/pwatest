@@ -1,0 +1,143 @@
+<div class="row body-fade">
+  <div *ngIf="machineOrders" class="col-12">
+    <mtx-grid
+      [data]="orders"
+      [columns]="columns"
+      [length]="length"
+      [pageOnFront]="true"
+      [noResultText]="noResultText"
+      [showPaginator]="false"
+      [pageSize]="16"
+      [headerTemplate]="{machine: machineHeaderTpl, date: dateHeaderTpl, order: orderHeaderTpl, articleNumber: articleNumberHeaderTpl, description: descriptionHeaderTpl, orderedQuantity: orderedQuantityHeaderTpl, quantityCompleted: quantityCompletedHeaderTpl, percentage: percentageHeaderTpl, amountToBeCompleted: differenceHeaderTpl, time: timeHeaderTpl, timeP: timeOtHeaderTpl, molde: moldeHeaderTpl} "
+      [cellTemplate]="{machine: machineTpl, date: dateTpl, order: orderTpl, articleNumber: articleNumberTpl, description: descriptionTpl, orderedQuantity: orderedQuantityTpl, quantityCompleted: quantityCompletedTpl, percentage: percentageTpl, amountToBeCompleted: differenceTpl, time: timeTpl, timeP: timePTpl, molde: moldeTpl}"
+    >
+      <ng-template #machineHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">Máquina</div>
+      </ng-template>
+      <ng-template #dateHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">Fecha de Arranque</div>
+      </ng-template>
+      <ng-template #orderHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">No. Orden</div>
+      </ng-template>
+      <ng-template
+        #articleNumberHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">No. Parte</div>
+      </ng-template>
+      <ng-template
+        #descriptionHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">Descripción de Parte</div>
+      </ng-template>
+      <ng-template
+        #orderedQuantityHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">Cantidad Planeada</div>
+      </ng-template>
+      <ng-template
+        #quantityCompletedHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">Cantidad Producida</div>
+      </ng-template>
+      <ng-template
+        #percentageHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">Cumplimiento por Orden</div>
+      </ng-template>
+      <ng-template
+        #differenceHeaderTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-header">Cantidad por Completar</div>
+      </ng-template>
+      <ng-template #timeHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">Tiempo Restante por Completar Orden</div>
+      </ng-template>
+      <ng-template #timeOtHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">Tiempo Restante por Completar Piezas</div>
+      </ng-template>
+      <ng-template #moldeHeaderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-header">Estatus de Molde</div>
+      </ng-template>
+      <!-- Template for cells -->
+      <ng-template #machineTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">{{ row?.machine }}</div>
+      </ng-template>
+      <ng-template #dateTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">{{ formatDate(row?.startDate) }}</div>
+      </ng-template>
+      <ng-template #orderTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">{{ row?.order }}</div>
+      </ng-template>
+      <ng-template #articleNumberTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">{{ row?.articleNumber }}</div>
+      </ng-template>
+      <ng-template #descriptionTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">{{ row?.description }}</div>
+      </ng-template>
+      <ng-template
+        #orderedQuantityTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-cell">
+          {{ numberFormat.format(row?.orderedQuantity) }}
+        </div>
+      </ng-template>
+      <ng-template
+        #quantityCompletedTpl
+        let-row
+        let-index="index"
+        let-col="colDef"
+      >
+        <div class="text-center tbl-cell">
+          {{ numberFormat.format(row?.quantityCompleted) }}
+        </div>
+      </ng-template>
+      <ng-template #percentageTpl let-row let-index="index" let-col="colDef">
+        <div [class]="'order-completed indicator-color indicator-color-' + row?.orderColorId">
+          {{ row?.percentage }}%
+        </div>
+      </ng-template>
+      <ng-template #differenceTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">
+          {{ numberFormat.format(row?.amountToBeCompleted) }}
+        </div>
+      </ng-template>
+      <ng-template #timeTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">
+          {{ row?.timeRemainingToCompleteOrder }}
+        </div>
+      </ng-template>
+      <ng-template #timePTpl let-row let-index="index" let-col="colDef">
+        <div class="text-center tbl-cell">
+          {{ row?.timeRemainingToCompletePieces }}
+        </div>
+      </ng-template>
+      <ng-template #moldeTpl let-row let-index="index" let-col="colDef">
+        <div [class]="'indicator-color blink-' + (row?.moldStatus == 'CAMBIO DE MOLDE' ? row?.colorByMoldChangeId : '')">
+          {{ row?.moldStatus }}
+        </div>
+      </ng-template>
+    </mtx-grid>
+  </div>
+</div>

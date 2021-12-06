@@ -1,0 +1,50 @@
+$primary-color: #223ea2;
+
+.title-content {
+  padding: 5px;
+  border-bottom: 2px solid #13319c;
+}
+
+.title {
+  color: #264cd2;
+}
+
+.expansion-header {
+  background: $primary-color !important;
+  color: white;
+}
+
+.expansion-panel {
+  border-radius: 0 !important;
+}
+
+.oee-field {
+  width: 100%;
+}
+
+form {
+  padding: 16px;
+}
+
+.chart-overflow-x {
+  overflow-x: scroll;
+}
+
+.title-oee {
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #223ea2;
+  padding-left: 2px;
+}
+
+.row-blue {
+  color: $primary-color;
+  font-weight: bold;
+}
+
+.tbl-header {
+  width: 100% !important;
+  font-size: 1em;
+  font-weight: bold;
+  color: #223ea2;
+}

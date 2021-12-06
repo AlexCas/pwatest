@@ -1,0 +1,177 @@
+$primary-color: #223ea2;
+.warehouse-title {
+  text-align: center;
+  font-weight: bold;
+  color: $primary-color;
+  border-bottom: 1px solid $primary-color;
+  padding: 10px;
+  font-size: 1.7vh;
+}
+.title-content {
+  padding: 5px;
+  border-bottom: 2px solid #13319c;
+}
+
+.title {
+  color: #264cd2;
+}
+
+.legend_point {
+  width: 1.7vh;
+  height: 1.7vh;
+  border-radius: 20px;
+  margin-right: 5px;
+  &__supply_green {
+    background-color: #55bf3b;
+  }
+  &__supply_yellow {
+    background-color: #dddf0d;
+  }
+  &__supply_red {
+    background-color: #df5353;
+  }
+  &__ordered {
+    background-color: #99119c;
+  }
+  &__scrap_factory {
+    background-color: #7291ff;
+  }
+  &__amountComplete {
+    background-color: #223ea2;
+  }
+  &__line {
+    background-color: white;
+    border: 2px solid #df5353;
+    z-index: 10;
+  }
+}
+
+.line_graphic {
+  background-color: #df5353;
+  width: 2.5vh;
+  height: 0.4vh;
+  margin-left: -2.8vh;
+  margin-top: 0.1vh;
+  margin-right: 0.5vh;
+}
+
+.trmvstm-header {
+  font-size: 12px;
+  font-weight: bold;
+  color: #223ea2;
+  width: 100%;
+  text-align: center;
+}
+
+.trmvstm {
+  font-size: 12px;
+  font-weight: bold;
+  color: #223ea2;
+  &__landscape {
+    margin-top: 16px;
+  }
+}
+
+.of-highcharts {
+  overflow: visible !important;
+}
+
+.legend_padding {
+  padding: 10px;
+}
+
+.legend_title {
+  font-weight: bold;
+}
+
+.expansion-header {
+  background: $primary-color !important;
+  color: white;
+}
+
+.expansion-panel {
+  border-radius: 0 !important;
+}
+
+.oee-field {
+  width: 100%;
+}
+
+form {
+  padding: 16px;
+}
+
+.machine-title {
+  padding: 7px;
+  background: #3257d9;
+  color: white;
+  font-weight: bold;
+}
+
+.machine-title-form {
+  color: #3257d9;
+  font-weight: bold;
+}
+
+.machine-item {
+  padding: 5px;
+  border-top: 1px solid #cacaca;
+  border-bottom: 1px solid #cacaca;
+  color: #223ea2;
+  font-weight: bold;
+  text-decoration: none;
+  list-style: none;
+}
+
+.aligned-with-icon {
+  position: relative;
+  top: -7px;
+}
+
+.chart-overflow-x {
+  overflow-x: scroll;
+}
+
+.hvh {
+  height: 443px;
+}
+
+.hvh-m {
+  height: 443px;
+}
+
+.legend-title {
+  width: 10%;
+  font-size: 9px;
+  font-weight: bold;
+  color: #223ea2;
+  &-landscape {
+    width: 6%;
+  }
+}
+
+.machine-margin {
+  margin-top: -9px;
+}
+
+.date-label {
+  font-size: 8px;
+  position: absolute;
+  bottom: -51px;
+  left: 19px;
+  color: $primary-color;
+  font-weight: bold;
+}
+
+.date-label-molde {
+  font-size: 8px;
+  position: absolute;
+  top: 387px;
+  left: 19px;
+  color: $primary-color;
+  font-weight: bold;
+}
+
+.relative-parent {
+  position: relative;
+}

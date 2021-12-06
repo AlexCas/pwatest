@@ -1,0 +1,140 @@
+<div class="padding">
+  <app-breadcrumbs [current]="title"></app-breadcrumbs>
+
+  <mat-card class="mt-3">
+    <mat-card-header>
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="center center" class="mb-3">
+          <mat-icon class="me-2">live_tv</mat-icon>
+          <h3>{{ title }}</h3>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="pt-2">
+      <div class="row">
+        <div class="col-12 col-md-4">
+          <div class="d-flex align-items-center h-100 justify-content-end pt-3">
+            <mat-form-field fxFlex="grow" appearance="outline">
+              <mat-label>Búsqueda por nombre e IP</mat-label>
+              <input
+                matInput
+                maxlength="50"
+                [(ngModel)]="objFilter.searchTerm"
+                (keyup.enter)="onSearch()"
+              />
+              <button
+                *ngIf="objFilter.searchTerm"
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                (click)="objFilter.searchTerm = ''; onSearch()"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+              <button
+                matSuffix
+                mat-icon-button
+                type="button"
+                color="primary"
+                (click)="onSearch()"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div
+            class="d-flex align-items-center h-100 justify-content-center pt-3"
+          >
+            <mat-form-field appearance="outline" class="mx-1">
+              <mat-label>Planta:</mat-label>
+              <mat-select>
+                <mat-option (onSelectionChange)="onFactoryChange($event)"
+                  >Todos</mat-option
+                >
+                <mat-option
+                  *ngFor="let item of factoryDataSource"
+                  [value]="item.id"
+                  (onSelectionChange)="onFactoryChange($event)"
+                >
+                  {{ item?.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="mx-1">
+              <mat-label>Nave</mat-label>
+              <mat-select>
+                <mat-option (onSelectionChange)="onWarehouseChange($event)"
+                  >Todos</mat-option
+                >
+                <mat-option
+                  (onSelectionChange)="onWarehouseChange($event)"
+                  *ngFor="let item of warehouseDataSource"
+                  [value]="item.id"
+                >
+                  {{ item?.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="d-flex align-items-center h-100 justify-content-end">
+            <mat-icon [matMenuTriggerFor]="filterMenu" class="filter-icon me-3"
+              >filter_alt</mat-icon
+            >
+            <button
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/devices/add']"
+            >
+              <mat-icon>add</mat-icon>
+              <span>Registrar Dispositivo</span>
+            </button>
+          </div>
+        </div>
+        <mat-menu #filterMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="onFilterChange()">Todos</button>
+          <button mat-menu-item (click)="onFilterChange(1)">Active</button>
+          <button mat-menu-item (click)="onFilterChange(0)">Inactive</button>
+        </mat-menu>
+      </div>
+
+      <div class="mat-elevation-z1 mt-4">
+        <mtx-grid
+          [data]="devices"
+          [columns]="columns"
+          [length]="length"
+          [pageOnFront]="true"
+          [noResultText]="noResultText"
+          [pageIndex]="query.pageIndex"
+          [pageSize]="query.pageSize"
+          [cellTemplate]="{sId: sIdTpl, status: statusTpl, isActive: isActiveTpl}"
+        >
+          <ng-template #sIdTpl let-row let-index="index" let-col="colDef">
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="['/devices/edit/' + row.id ]"
+            >
+              {{row?.sId}}
+            </button>
+          </ng-template>
+          <ng-template #statusTpl let-row let-index="index" let-col="colDef">
+            {{row?.isActive ? 'Activo': 'Inactivo'}}
+          </ng-template>
+          <ng-template #isActiveTpl let-row let-index="index" let-col="colDef">
+            <mat-slide-toggle
+              [(ngModel)]="row.isActive"
+              [checked]="row.isActive"
+              (change)="updateStatus($event, row)"
+            >
+            </mat-slide-toggle>
+          </ng-template>
+        </mtx-grid>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

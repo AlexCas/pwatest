@@ -1,0 +1,19 @@
+<div>
+  <mat-card class="bg-container pb-0 pt-0 mt-0">
+    <mat-card-title class="d-flex justify-content-center title">
+      <app-tv-header class="w-100" title="OEE"></app-tv-header>
+    </mat-card-title>
+  </mat-card>
+  <mat-card class="mt-2 bg-container pt-0 pb-0 mb-0">
+    <mat-card-content *ngIf="factoryData">
+      <div class="row">
+        <div class="col-12">
+          <app-ware-house-indicators [title]="factoryData.warehouse ? factoryData.warehouse.warehouse : ''" [warehouse]="factoryData.warehouse"></app-ware-house-indicators>
+        </div>
+        <div class="col-12">
+          <app-gnl-oee [title]="factoryData.factory" [factory]="factoryData.general"></app-gnl-oee>
+        </div>        
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

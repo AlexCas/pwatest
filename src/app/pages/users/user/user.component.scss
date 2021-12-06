@@ -1,0 +1,53 @@
+$primary-color: #2440a3;
+
+.usr-avatar {
+  margin: 25px;
+  text-align: center;
+  img {
+    width: 100%;
+    border-radius: 15px;
+    max-width: 200px;
+  }
+}
+
+.usr-avatar-mobile {
+  margin-top: 0;
+}
+
+::ng-deep .w-with {
+  width: calc(100% - 30px);
+}
+
+.title_general {
+  color: $primary-color;
+  border-bottom: 1px solid $primary-color;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.general_info {
+  color: $primary-color;
+  font-size: 14px;
+  font-weight: bold;
+  &__subtitle {
+    margin: 0;
+    padding-left: 5px;    
+  }
+}
+
+.data_p0 {
+  padding-left: 0;
+}
+
+.general_info_business {
+  color: $primary-color;
+  font-size: 16px;
+  font-weight: bold;
+  &__subtitle {
+    padding-left: 5px;
+  }
+}
+
+.data_section {
+  margin-bottom: 10px;
+}

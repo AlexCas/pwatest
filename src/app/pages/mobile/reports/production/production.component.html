@@ -1,0 +1,790 @@
+<div class="row" *ngIf="productionDataSource">
+  <div class="col-12">
+    <app-tv-header title="Avance de Producción" backButton="/"></app-tv-header>
+  </div>
+  <div class="col-12" *ngIf="showCarrousel">
+    <mat-accordion>
+      <mat-expansion-panel
+        class="expansion-panel"
+        [expanded]="carouselConfig"
+        (opened)="carouselConfig = true"
+        (closed)="carouselConfig = false"
+      >
+        <mat-expansion-panel-header class="expansion-header"
+          >Configuracion de Carrusel
+        </mat-expansion-panel-header>
+        <app-carousel-config [reportName]="reportName"></app-carousel-config>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div class="col-12 mt-2">
+    <mat-accordion>
+      <mat-expansion-panel
+        class="expansion-panel"
+        [expanded]="filterOpen"
+        (opened)="filterOpen = true"
+        (closed)="filterOpen = false"
+      >
+        <mat-expansion-panel-header class="expansion-header">
+          Filtros
+        </mat-expansion-panel-header>
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          *ngIf="
+            rolePermissionsData &&
+            !machinesSwitch &&
+            !ordersSwitch &&
+            !itemSwitch
+          "
+        >
+          <div class="row">
+            <div class="col-12">
+              <mat-form-field class="w-100" appearance="standard">
+                <mat-label>Planta</mat-label>
+                <mat-select
+                  formControlName="factoryId"
+                  (selectionChange)="onFactoryChange($event)"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let item of rolePermissionsData.factories"
+                    [value]="item"
+                  >
+                    {{ item?.factoryName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-12" *ngIf="factorySelected">
+              <mat-form-field class="w-100" appearance="standard">
+                <mat-label>Nave</mat-label>
+                <mat-select
+                  formControlName="warehouseId"
+                  (selectionChange)="onWarehouseChange()"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let item of factorySelected.warehouses"
+                    [value]="item.warehouseId"
+                  >
+                    {{ item?.warehouseName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+              </mat-form-field>
+            </div>
+            <mat-divider class="mb-3"></mat-divider>
+            <div class="col-6">
+              <mat-form-field appearance="fill" class="oee-field">
+                <mat-label>Fecha Inicio:</mat-label>
+                <input
+                  formControlName="startDate"
+                  matInput
+                  [matDatepicker]="startDate"
+                />
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="startDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field appearance="fill" class="oee-field">
+                <mat-label>Fecha Fin:</mat-label>
+                <input
+                  formControlName="endDate"
+                  matInput
+                  [matDatepicker]="endDate"
+                />
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="endDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #endDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6 my-3 text-left">
+              <span class="machine-title-form">Máquina</span>
+            </div>
+            <div class="col-6 my-3 text-end" (click)="switchMachine()">
+              <span class="aligned-with-icon">{{
+                machineSelected.length > 0
+                  ? machineSelected[0].machine +
+                    " - " +
+                    machineSelected[machineSelected.length - 1].machine
+                  : "Seleccionar"
+              }}</span>
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6 my-3 text-left">
+              <span class="machine-title-form">No. Orden</span>
+            </div>
+            <div class="col-6 my-3 text-end" (click)="switchOrders()">
+              <span class="aligned-with-icon">{{
+                ordersSelected.length > 0
+                  ? ordersSelected[0] +
+                    " - " +
+                    ordersSelected[ordersSelected.length - 1]
+                  : "Seleccionar"
+              }}</span>
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6 my-3 text-left">
+              <span class="machine-title-form">No. Parte</span>
+            </div>
+            <div class="col-6 my-3 text-end" (click)="switchItems()">
+              <span class="aligned-with-icon">{{
+                itemsSelected.length > 0
+                  ? itemsSelected[0] +
+                    " - " +
+                    itemsSelected[itemsSelected.length - 1]
+                  : "Seleccionar"
+              }}</span>
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanValues($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <mat-icon>clear</mat-icon>
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button type="submit" color="primary" mat-raised-button>
+                  <mat-icon>search</mat-icon>
+                  <span> Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row" *ngIf="machinesSwitch">
+          <div
+            (click)="backToForm($event)"
+            class="col-12 d-flex justify-content-between machine-title"
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+            <span>Seleccionar Máquina</span>
+          </div>
+          <div class="col-12">
+            <li class="machine-item">
+              <mat-checkbox
+                [checked]="selectedAllMachines"
+                (change)="selectAllMachines()"
+              >
+                Seleccionar Todas
+              </mat-checkbox>
+            </li>
+            <li class="machine-item" *ngFor="let machine of machineList">
+              <mat-checkbox
+                [checked]="checkMachine(machine)"
+                (change)="selectMachine(machine, $event.checked)"
+              >
+                {{ machine.machine }}
+              </mat-checkbox>
+            </li>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="cleanMachines($event)"
+                color="secondary"
+                mat-raised-button
+              >
+                <span> Limpiar</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="backToForm($event)"
+                color="primary"
+                mat-raised-button
+              >
+                <span> Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="ordersSwitch">
+          <div
+            (click)="backToForm($event)"
+            class="col-12 d-flex justify-content-between machine-title"
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+            <span>Seleccionar No. Orden</span>
+          </div>
+          <div class="col-12">
+            <li class="machine-item">
+              <mat-checkbox
+                [checked]="selectedAllOrders"
+                (change)="selectAllOrders()"
+              >
+                Seleccionar Todas
+              </mat-checkbox>
+            </li>
+            <li class="machine-item" *ngFor="let order of orderList">
+              <mat-checkbox
+                [checked]="checkOrder(order)"
+                (change)="selectOrder2(order, $event.checked)"
+              >
+                {{ order }}
+              </mat-checkbox>
+            </li>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="cleanOrders($event)"
+                color="secondary"
+                mat-raised-button
+              >
+                <span> Limpiar</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="backToForm($event)"
+                color="primary"
+                mat-raised-button
+              >
+                <span> Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="itemSwitch">
+          <div
+            (click)="backToForm($event)"
+            class="col-12 d-flex justify-content-between machine-title"
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+            <span>Seleccionar No. Parte</span>
+          </div>
+          <div class="col-12">
+            <li class="machine-item">
+              <mat-checkbox
+                [checked]="selectedAllItems"
+                (change)="selectAllItems()"
+              >
+                Seleccionar Todas
+              </mat-checkbox>
+            </li>
+            <li class="machine-item" *ngFor="let item of itemList">
+              <mat-checkbox
+                [checked]="checkItem(item)"
+                (change)="selectItem2(item, $event.checked)"
+              >
+                {{ item }}
+              </mat-checkbox>
+            </li>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="cleanItems($event)"
+                color="secondary"
+                mat-raised-button
+              >
+                <span> Limpiar</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="backToForm($event)"
+                color="primary"
+                mat-raised-button
+              >
+                <span> Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div class="col-12">
+    <div class="title-content text-center">
+      <span class="title"
+        >Planta
+        {{
+          productionDataSource.factory
+            ? productionDataSource.factory
+            : getFactoryName()
+        }}
+        -
+        {{
+          productionDataSource.warehouse.name
+            ? productionDataSource.warehouse.name
+            : getWarehouseName()
+        }}</span
+      >
+    </div>
+    <div class="title-content text-center">
+      <span class="title">Plan de Producción Ensambles Diario.</span>
+    </div>
+    <!-- Inicio Tabla avance de produccion -->
+    <div class="table-prod">
+      <div
+        class="ifFound"
+        *ngIf="productionDataSource.warehouse.machinesA1.length > 0"
+      >
+        <mtx-grid
+          [data]="machineOrders"
+          [columns]="columns"
+          [length]="length"
+          [pageOnFront]="true"
+          [noResultText]="noResultText"
+          [pageIndex]="query.pageIndex"
+          [pageSize]="query.pageSize"
+          [headerTemplate]="{
+            machine: headerTpl,
+            date: headerTpl,
+            order: headerTpl,
+            articleNumber: headerTpl,
+            description: headerTpl,
+            orderedQuantity: headerTpl,
+            quantityCompleted: headerTpl,
+            percentage: headerTpl,
+            amountToBeCompleted: headerTpl,
+            time: headerTpl,
+            timeP: headerTpl,
+            molde: headerTpl
+          }"
+          [cellTemplate]="{
+            machine: machineTpl,
+            date: dateTpl,
+            order: orderTpl,
+            articleNumber: articleNumberTpl,
+            description: descriptionTpl,
+            orderedQuantity: orderedQuantityTpl,
+            quantityCompleted: quantityCompletedTpl,
+            percentage: percentageTpl,
+            amountToBeCompleted: differenceTpl,
+            time: timeTpl,
+            timeP: timePTpl,
+            molde: moldeTpl
+          }"
+        >
+          <ng-template
+            class="no-border"
+            #headerTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-header">{{ row?.header }}</div>
+          </ng-template>
+          <!-- Template for cells -->
+          <ng-template #machineTpl let-row let-index="index" let-col="colDef">
+            <div class="text-center tbl-cell">{{ row?.machine }}</div>
+          </ng-template>
+          <ng-template #dateTpl let-row let-index="index" let-col="colDef">
+            <div class="text-center tbl-cell">
+              {{ formatDate(row?.startDate) }}
+            </div>
+          </ng-template>
+          <ng-template #orderTpl let-row let-index="index" let-col="colDef">
+            <div class="text-center tbl-cell">{{ row?.order }}</div>
+          </ng-template>
+          <ng-template
+            #articleNumberTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-cell">{{ row?.articleNumber }}</div>
+          </ng-template>
+          <ng-template
+            #descriptionTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-cell">{{ row?.description }}</div>
+          </ng-template>
+          <ng-template
+            #orderedQuantityTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-cell">
+              {{
+                row?.orderedQuantity > 0
+                  ? numberFormat.format(row?.orderedQuantity)
+                  : row?.orderedQuantity
+              }}
+            </div>
+          </ng-template>
+          <ng-template
+            #quantityCompletedTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-cell">
+              {{
+                row?.quantityCompleted > 0
+                  ? numberFormat.format(row?.quantityCompleted)
+                  : row?.quantityCompleted
+              }}
+            </div>
+          </ng-template>
+          <ng-template
+            #percentageTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div
+              [class]="
+                'order-completed tbl-cell indicator-color indicator-color-' +
+                row?.orderColorId
+              "
+            >
+              {{ row?.percentage }}%
+            </div>
+          </ng-template>
+          <ng-template
+            #differenceTpl
+            let-row
+            let-index="index"
+            let-col="colDef"
+          >
+            <div class="text-center tbl-cell">
+              {{ numberFormat.format(row?.amountToBeCompleted) }}
+            </div>
+          </ng-template>
+          <ng-template #timeTpl let-row let-index="index" let-col="colDef">
+            <div class="text-center tbl-cell">
+              {{ numberFormat.format(row?.timeRemainingToCompleteOrder) }}
+            </div>
+          </ng-template>
+          <ng-template #timePTpl let-row let-index="index" let-col="colDef">
+            <div class="text-center tbl-cell">
+              {{ row?.timeRemainingToCompletePieces }}
+            </div>
+          </ng-template>
+          <ng-template #moldeTpl let-row let-index="index" let-col="colDef">
+            <div
+              [class]="
+                'indicator-color-mobile blink-' +
+                (row?.moldStatus == 'CAMBIO DE MOLDE'
+                  ? row?.colorByMoldChangeId
+                  : '')
+              "
+            >
+              {{ row?.moldStatus }}
+            </div>
+          </ng-template>
+        </mtx-grid>
+      </div>
+      <div
+        class="notFound text-center"
+        *ngIf="productionDataSource.warehouse.machinesA1.length == 0"
+      >
+        No se encontraron registros.
+      </div>
+    </div>
+    <!-- Fin Tabla avance de produccion -->
+  </div>
+  <div class="col-12">
+    <div class="title-content text-center">
+      <span class="title"
+        >Planta
+        {{
+          productionDataSource.factory
+            ? productionDataSource.factory
+            : getFactoryName()
+        }}
+        -
+        {{
+          productionDataSource.warehouse.name
+            ? productionDataSource.warehouse.name
+            : getWarehouseName()
+        }}</span
+      >
+    </div>
+    <div class="title-content text-center">
+      <span class="title">Avance de Producción del Día por Máquina.</span>
+    </div>
+  </div>
+  <!-- Inicio Tabla avance de produccion por dia -->
+  <div class="prod-day-machine">
+    <div
+      class="ifFound"
+      *ngIf="productionDataSource.warehouse.machinesA2.length > 0"
+    >
+      <div class="col-12">
+        <div class="row pb-0 mb-0">
+          <div
+            class="
+              col-4
+              font-weight-bold
+              d-flex
+              align-items-center
+              justify-content-end
+            "
+          >
+            <div class="legend_point legend_point__ordered"></div>
+            <span class="legend_title">Cantidad Ordenada</span>
+          </div>
+          <div
+            class="
+              col-4
+              font-weight-bold
+              d-flex
+              align-items-center
+              justify-content-center
+            "
+          >
+            <div class="legend_point legend_point__supply_green"></div>
+            <div class="legend_point legend_point__supply_yellow"></div>
+            <div class="legend_point legend_point__supply_red"></div>
+            <span class="legend_title">Cantidad Completada</span>
+          </div>
+
+          <div
+            class="
+              col-4
+              font-weight-bold
+              d-flex
+              align-items-center
+              justify-content-center
+            "
+          >
+            <div class="legend_point legend_point__line"></div>
+            <div class="legend_point legend_point__amountComplete"></div>
+            <span class="legend_title">Cantidad por Completar</span>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          productionDataSource.warehouse.machinesA2.length > 0 &&
+          !landscape.matches &&
+          !loadChart
+        "
+        [class]="
+          'col-12 ' +
+          (productionDataSource.warehouse.machines &&
+          productionDataSource.warehouse.machines.length > 7
+            ? 'of-highcharts'
+            : '') +
+          ' relative-parent'
+        "
+      >
+        <div class="legend-title">
+          <div class="text-center">Piezas por</div>
+          <div class="text-center machine-margin">máquina</div>
+        </div>
+        <highcharts-chart
+          class="of-highcharts"
+          [Highcharts]="Highcharts"
+          [options]="productionDayChart"
+          [style]="
+            'width: ' +
+            (productionDataSource.warehouse.machines &&
+            productionDataSource.warehouse.machines.length > 7
+              ? '130%;'
+              : '100%;') +
+            ' height: 500px; display: block'
+          "
+        ></highcharts-chart>
+        <div class="legend-subtitle">
+          <div class="text-center">% de</div>
+          <div class="text-center machine-margin">Cumplimiento</div>
+        </div>
+        <div class="legend-machine">
+          <div class="text-center">Máquinas</div>
+        </div>
+      </div>
+      <div
+        [class]="
+          'col-12 ' +
+          (productionDataSource.warehouse.machines &&
+          productionDataSource.warehouse.machines.length > 7
+            ? 'of-highcharts'
+            : '') +
+          ' relative-parent'
+        "
+        *ngIf="
+          productionDataSource.warehouse.machinesA2.length > 0 &&
+          landscape.matches &&
+          !loadChart
+        "
+      >
+        <div class="legend-title legend-title-landscape">
+          <div class="text-center">Piezas por</div>
+          <div class="text-center machine-margin">máquina</div>
+        </div>
+        <highcharts-chart
+          class="of-highcharts"
+          [Highcharts]="Highcharts"
+          [options]="productionDayChart"
+          [style]="'width: 100%; height: 50vh; display: block'"
+        ></highcharts-chart>
+        <div class="legend-subtitle legend-subtitle-landscape">
+          <div class="text-center">% de</div>
+          <div class="text-center machine-margin">Cumplimiento</div>
+        </div>
+        <div class="legend-machine">
+          <div class="text-center">Máquinas</div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="notFound text-center"
+      *ngIf="productionDataSource.warehouse.machinesA2.length == 0"
+    >
+      No se encontraron registros.
+    </div>
+  </div>
+  <!-- Fin Tabla avance de produccion por dia -->
+
+  <div class="row">
+    <div class="col-12">
+      <div class="title-content text-center">
+        <span class="title"
+          >Planta
+          {{
+            productionDataSource.factory
+              ? productionDataSource.factory
+              : getFactoryName()
+          }}
+          -
+          {{
+            productionDataSource.warehouse.name
+              ? productionDataSource.warehouse.name
+              : getWarehouseName()
+          }}</span
+        >
+      </div>
+      <div class="title-content text-center">
+        <span class="title">Avance de Producción Semanal.</span>
+      </div>
+    </div>
+    <div
+      *ngIf="!productionDataSource.warehouse.semanales"
+      class="col-12 text-center"
+    >
+      No se encontraron registros.
+    </div>
+    <div class="col-12" *ngIf="productionDataSource.warehouse.semanales">
+      <div class="row legend_content">
+        <div
+          class="
+            col-6
+            font-weight-bold
+            d-flex
+            align-items-center
+            legend_padding
+            justify-content-center
+          "
+        >
+          <div class="legend_point legend_point__amountComplete"></div>
+          <span class="legend_title">Cantidad Ordenada</span>
+        </div>
+        <div
+          class="
+            col-6
+            font-weight-bold
+            d-flex
+            align-items-center
+            justify-content-center
+            legend_padding
+          "
+        >
+          <div class="legend_point legend_point__supply_green"></div>
+          <div class="legend_point legend_point__supply_yellow"></div>
+          <div class="legend_point legend_point__supply_red"></div>
+          <span class="legend_title">Cantidad Completada</span>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="chartOptionsMonday" class="col-6">
+      <div class="title text-center">Lunes</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsMonday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsTuesday" class="col-6">
+      <div class="title text-center">Martes</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsTuesday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsWednesday" class="col-6">
+      <div class="title text-center">Míercoles</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsWednesday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsThrusday" class="col-6">
+      <div class="title text-center">Jueves</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsThrusday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsFriday" class="col-6">
+      <div class="title text-center">Viernes</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsFriday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsSaturday" class="col-6">
+      <div class="title text-center">Sábado</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsSaturday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+    <div *ngIf="chartOptionsSunday" class="col-6">
+      <div class="title text-center">Dómingo</div>
+      <highcharts-chart
+        class="of-highcharts"
+        [Highcharts]="Highcharts"
+        [options]="chartOptionsSunday"
+        style="width: 100%; height: 15vh; display: block"
+      ></highcharts-chart>
+    </div>
+  </div>
+</div>

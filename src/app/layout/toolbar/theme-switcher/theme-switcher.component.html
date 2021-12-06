@@ -1,0 +1,4 @@
+<button class="button" fxHide fxShow.gt-sm mat-button (click)="toggleLightMode()" fxFlex="grow">
+  <mat-icon *ngIf="isLightMode">light_mode</mat-icon>
+  <mat-icon *ngIf="!isLightMode">nightlight</mat-icon>
+</button>

@@ -1,0 +1,256 @@
+$primary-color: #223ea2;
+
+.title-content {
+  padding: 5px;
+  border-bottom: 2px solid #13319c;
+}
+
+.title {
+  color: #264cd2;
+}
+
+.expansion-header {
+  background: $primary-color !important;
+  color: white;
+}
+
+.expansion-panel {
+  border-radius: 0 !important;
+}
+
+.oee-field {
+  width: 100%;
+}
+
+form {
+  padding: 16px;
+}
+
+.chart-overflow-x {
+  overflow-x: scroll;
+}
+
+.title-oee {
+  font-weight: bold;
+  font-size: 0.8em;
+  color: #223ea2;
+  padding-left: 2px;
+}
+
+$alert-danger: #df5353;
+$warning-alert: #dddf0d;
+$orange-alert: #FF9300;
+$success-alert: #55bf3b;
+
+.tbl-cell {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.tbl-header {
+  width: 100% !important;
+  font-size: 1em;
+  font-weight: bold;
+  color: #223ea2;
+}
+
+@mixin customKeyframes($name, $color) {
+  @keyframes #{$name} {
+    0% {
+      background: $color;
+    }
+    50% {
+      background: white;
+      color: black;
+    }
+    100% {
+      background: $color;
+    }
+  }
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes widthInAnimation {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@mixin blinkAnimation($name, $duration) {
+  animation: $name $duration infinite;
+}
+
+@mixin delayAnimation($name, $duration) {
+  animation: $name $duration infinite;
+}
+
+.body-fade {
+  animation: fadeInAnimation ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.order-completed {
+  animation: widthInAnimation ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.blink {
+  &-100 {
+    @include customKeyframes(blink-100, $alert-danger);
+    @include blinkAnimation(blink-100, 1s);
+  }
+
+  &-200 {
+    @include customKeyframes(blink-200, $warning-alert);
+    @include blinkAnimation(blink-200, 1s);
+  }
+  &-300 {
+    @include customKeyframes(blink-300, $orange-alert);
+    @include blinkAnimation(blink-300, 1s);
+  }
+  &-400 {
+    @include customKeyframes(blink-400, $success-alert);
+    @include blinkAnimation(blink-400, 1s);
+  }
+}
+
+.trmvstm {
+  font-size: 15px;
+  font-weight: bold;
+  bottom: 11px;
+  left: 9px;
+  color: #223ea2;
+}
+
+.legend_point {
+  width: 15px;
+  height: 15px;
+  border-radius: 20px;
+  margin-right: 5px;
+  &__supply_green {
+    background-color: #55bf3b;
+  }
+  &__supply_yellow {
+    background-color: #f6ed00;
+  }
+  &__supply_red {
+    background-color: #df5353;
+  }
+  &__ordered {
+    background-color: #223ea2;
+  }
+  &__amountComplete {
+    background-color: #98297a;
+  }
+  &__line {
+    background-color: white;
+    border: 2px solid #f8ad6f;
+    z-index: 10;
+  }
+}
+
+.legend_title {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.of-highcharts {
+  overflow: visible !important;
+}
+
+.line_graphic {
+  background-color: #f8ad6f;
+  width: 2.5vh;
+  height: 0.4vh;
+  margin-left: -2.8vh;
+  margin-top: 0.1vh;
+  margin-right: 0.5vh;
+}
+
+.chart-overflow-x {
+  overflow-x: scroll;
+}
+
+.relative-parent {
+  position: relative;
+}
+
+.machine-title-form {
+  color: #3257d9;
+  font-weight: bold;
+}
+
+.machine-item {
+  padding: 5px;
+  border-top: 1px solid #cacaca;
+  border-bottom: 1px solid #cacaca;
+  color: #223ea2;
+  font-weight: bold;
+  text-decoration: none;
+  list-style: none;
+}
+
+.aligned-with-icon {
+  position: relative;
+  top: -7px;
+}
+
+.machine-title {
+  padding: 16px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  background: #3257d9;
+  color: white;
+  font-weight: bold;
+}
+
+.legend-title {
+  width: 15%;
+  padding-top: 23px;
+  font-size: 9px;
+  font-weight: bold;
+  color: #223ea2;
+  &-landscape {
+    width: 7%;
+  }
+}
+
+.legend-subtitle {
+  width: 15%;
+  font-size: 7px;
+  font-weight: bold;
+  color: #223ea2;
+  position: absolute;
+  bottom: 22px;
+  left: 6px;
+  &-landscape {
+    left: -23px;
+  }
+}
+
+.machine-margin {
+  margin-top: -9px;
+}
+
+.legend-machine {
+  font-size: 11px;
+  font-weight: bold;
+  color: #223ea2;
+}
+
+.no-border {
+  border: 0 !important;
+}

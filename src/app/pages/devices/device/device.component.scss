@@ -1,0 +1,19 @@
+@use '~@angular/material' as mat;
+@import "var";
+
+.title {
+  color: white;
+}
+
+.card {
+  margin: $spacing;
+  width: 50%;
+  border-radius: $border-radius;
+  overflow: hidden;
+
+  @include mat.elevation(4);
+
+  .heading {
+    font: var(--font-title);
+  }
+}

@@ -1,0 +1,33 @@
+<div class="row font-size-carousel mt-3">
+  <div class="col-4">
+    <mat-form-field
+      class="font-size-carousel"
+      fxFlex="grow"
+      appearance="outline"
+    >
+      <mat-label>Minutos</mat-label>
+      <input [(ngModel)]="minutes" type="number" matInput maxlength="50" />
+    </mat-form-field>
+  </div>
+  <div class="col-4">
+    <mat-form-field
+      class="font-size-carousel"
+      fxFlex="grow"
+      appearance="outline"
+    >
+      <mat-label>Segundos</mat-label>
+      <input [(ngModel)]="seconds" type="number" matInput maxlength="50" />
+    </mat-form-field>
+  </div>
+  <div class="col-4">
+    <button
+      (click)="getSelectedTimedInSeconds()"
+      class="font-size-carousel"
+      type="button"
+      color="primary"
+      mat-raised-button
+    >
+      <span> GUARDAR</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,729 @@
+<div class="row" *ngIf="scrapData">
+  <div class="col-12">
+    <app-tv-header title="Scrap" backButton="/"></app-tv-header>
+  </div>
+  <div class="col-12">
+    <mat-accordion>
+      <mat-expansion-panel
+        class="expansion-panel"
+        [expanded]="filterOpen"
+        (opened)="filterOpen = true"
+        (closed)="filterOpen = false"
+      >
+        <mat-expansion-panel-header class="expansion-header">
+          Filtros
+        </mat-expansion-panel-header>
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          *ngIf="rolePermissionsData && !machinesSwitch"
+        >
+          <div class="row">
+            <div class="col-12">
+              <mat-form-field class="w-100" appearance="standard">
+                <mat-label>Planta</mat-label>
+                <mat-select
+                  formControlName="factoryId"
+                  (selectionChange)="onFactoryChange($event)"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let item of rolePermissionsData.factories"
+                    [value]="item"
+                  >
+                    {{ item?.factoryName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-12" *ngIf="factorySelected">
+              <mat-form-field class="w-100" appearance="standard">
+                <mat-label>Nave</mat-label>
+                <mat-select
+                  formControlName="warehouseId"
+                  (selectionChange)="onWarehouseChange()"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let item of factorySelected.warehouses"
+                    [value]="item.warehouseId"
+                  >
+                    {{ item?.warehouseName }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+              </mat-form-field>
+            </div>
+            <mat-divider class="mb-3"></mat-divider>
+            <div class="col-6">
+              <mat-form-field appearance="fill" class="oee-field">
+                <mat-label>Fecha Inicio:</mat-label>
+                <input
+                  formControlName="startDate"
+                  matInput
+                  [matDatepicker]="startDate"
+                />
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="startDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field appearance="fill" class="oee-field">
+                <mat-label>Fecha Fin:</mat-label>
+                <input
+                  formControlName="endDate"
+                  matInput
+                  [matDatepicker]="endDate"
+                />
+                <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="endDate"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #endDate></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6 my-3 text-left">
+              <span class="machine-title-form">Máquina</span>
+            </div>
+            <div class="col-6 my-3 text-end" (click)="switchMachine()">
+              <span class="aligned-with-icon">{{
+                machineSelected.length > 0
+                  ? machineSelected[0].machine +
+                    " - " +
+                    machineSelected[machineSelected.length - 1].machine
+                  : "Seleccionar"
+              }}</span>
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanValues($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <mat-icon>clear</mat-icon>
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button type="submit" color="primary" mat-raised-button>
+                  <mat-icon>search</mat-icon>
+                  <span> Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row" *ngIf="machinesSwitch">
+          <div
+            (click)="backToForm($event)"
+            class="col-12 d-flex justify-content-between machine-title"
+          >
+            <mat-icon>keyboard_arrow_left</mat-icon>
+            <span>Seleccionar Máquina</span>
+          </div>
+          <div class="col-12">
+            <li class="machine-item">
+              <mat-checkbox
+                [checked]="selectedAllMachines"
+                (change)="selectAllMachines()"
+              >
+                Seleccionar Todas
+              </mat-checkbox>
+            </li>
+            <li class="machine-item" *ngFor="let machine of machineList">
+              <mat-checkbox
+                [checked]="checkMachine(machine)"
+                (change)="selectMachine(machine, $event.checked)"
+              >
+                {{ machine.machine }}
+              </mat-checkbox>
+            </li>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="cleanMachines($event)"
+                color="secondary"
+                mat-raised-button
+              >
+                <span> Limpiar</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="my-3 text-center">
+              <button
+                (click)="backToForm($event)"
+                color="primary"
+                mat-raised-button
+              >
+                <span> Aceptar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div class="col-12">
+    <div class="title-content text-center">
+      <span class="title"
+        >Top 5 Total Scrap:
+        {{ scrapData.factory ? scrapData.factory : getFactoryName() }}
+        {{
+          scrapData.warehouse.name
+            ? scrapData.warehouse.name
+            : getWarehouseName()
+        }}</span
+      >
+    </div>
+    <div class="title-content text-center">
+      <span class="title">Scrap por Máquina</span>
+    </div>
+    <!-- Inicio de grafica por maquina Nave -->
+    <div class="scrap-machine-warehouse">
+      <div class="ifFound" *ngIf="scrapData.warehouse.items.length > 0">
+        <div class="col-12">
+          <div class="row legend_content">
+            <div
+              class="
+                col-12
+                font-weight-bold
+                d-flex
+                align-items-center
+                justify-content-center
+                legend_padding
+              "
+            >
+              <div class="legend_point legend_point__amountComplete"></div>
+              <span class="legend_title">Costo de Scrap Nave</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 hvh relative-parent" *ngIf="!landscape.matches">
+              <div class="legend-title">
+                <div class="text-center">Costos</div>
+              </div>
+              <highcharts-chart
+                *ngIf="!landscape.matches && !loadChart"
+                class="of-highcharts"
+                [Highcharts]="Highcharts"
+                [options]="chartOptionsWarehouseTRTM"
+                style="width: 100%; height: 436px; display: block"
+              ></highcharts-chart>
+              <span class="date-label">Fecha: </span>
+            </div>
+            <div class="col-12 hvh-m relative-parent" *ngIf="landscape.matches">
+              <div class="legend-title legend-title-landscape">
+                <div class="text-center">Costos</div>
+              </div>
+              <highcharts-chart
+                *ngIf="landscape.matches && !loadChart"
+                class="of-highcharts"
+                [Highcharts]="Highcharts"
+                [options]="chartOptionsWarehouseTRTM"
+                style="width: 100%; height: 436px; display: block"
+              ></highcharts-chart>
+              <span class="date-label">Fecha: </span>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="col-12 mt-5">
+          <div class="title-content text-center">
+            <mat-slide-toggle
+              [(ngModel)]="scrapWarehouseDetail"
+              class="title"
+              color="primary"
+              >Detalle</mat-slide-toggle
+            >
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="scrapWarehouseDetail">
+          <mtx-grid
+            [data]="scrapData.warehouse.items"
+            [columns]="columns"
+            [length]="length"
+            [pageOnFront]="true"
+            [noResultText]="noResultText"
+            [pageIndex]="query.pageIndex"
+            [pageSize]="query.pageSize"
+            [headerTemplate]="{
+              name: headerTpl,
+              machine: headerTpl,
+              scrapQuantity: headerTpl,
+              scrapCost: headerTpl,
+              gnlCostPercentage: headerTpl,
+              scrapCostPercentage: headerTpl,
+              completedQuantity: headerTpl,
+              gnlScrapPercentage: headerTpl
+            }"
+            [cellTemplate]="{
+              name: nameTpl,
+              machine: machineTpl,
+              scrapQuantity: scrapQuantityTpl,
+              scrapCost: scrapCostTpl,
+              gnlCostPercentage: scrapCostPercentageTpl,
+              scrapCostPercentage: gnlCostPercentageTpl,
+              completedQuantity: completedQuantityTpl,
+              gnlScrapPercentage: gnlScrapPercentageTpl
+            }"
+          >
+            <!-- Header Templates -->
+            <ng-template #headerTpl let-row let-index="index" let-col="colDef">
+              <div class="text-center trmvstm">{{ row?.header }}</div>
+            </ng-template>
+            <!-- Content Templates -->
+            <ng-template #nameTpl let-row let-index="index" let-col="colDef">
+              <div class="text-center">{{ scrapData.warehouse.name }}</div>
+            </ng-template>
+            <ng-template #machineTpl let-row let-index="index" let-col="colDef">
+              <div class="text-center">{{ row?.machine }}</div>
+            </ng-template>
+            <ng-template
+              #scrapQuantityTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.scrapQuantity) }}
+              </div>
+            </ng-template>
+            <ng-template
+              #scrapCostTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                ${{ numberFormat.format(row?.scrapCost) }}
+              </div>
+            </ng-template>
+            <ng-template
+              #scrapCostPercentageTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.scrapCostPercentage) }}%
+              </div>
+            </ng-template>
+            <ng-template
+              #gnlCostPercentageTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.gnlCostPercentage) }}%
+              </div>
+            </ng-template>
+            <ng-template
+              #completedQuantityTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.completedQuantity) }}
+              </div>
+            </ng-template>
+            <ng-template
+              #gnlScrapPercentageTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.gnlScrapPercentage) }} %
+              </div>
+            </ng-template>
+          </mtx-grid>
+        </div>
+      </div>
+      <div
+        class="notFound text-center"
+        *ngIf="scrapData.warehouse.items.length == 0"
+      >
+        No se encontraron registros.
+      </div>
+    </div>
+    <!-- Fin de grafica por maquina Nave -->
+    <div class="col-12">
+      <div class="title-content text-center">
+        <span class="title"
+          >Top 5 Total Scrap:
+          {{ scrapData.factory ? scrapData.factory : getFactoryName() }}</span
+        >
+      </div>
+      <div class="title-content text-center">
+        <span class="title">Scrap por Máquina</span>
+      </div>
+      <!-- Inicio de grafica por maquina Planta -->
+      <div class="scrap-maquina-factory">
+        <div class="ifFound" *ngIf="scrapData.machines.length > 0">
+          <div class="col-12">
+            <div class="row legend_content">
+              <div
+                class="
+                  col-12
+                  font-weight-bold
+                  d-flex
+                  align-items-center
+                  justify-content-center
+                  legend_padding
+                "
+              >
+                <div class="legend_point legend_point__scrap_factory"></div>
+                <span class="legend_title">Costos Scrap Planta</span>
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col-12 hvh relative-parent"
+                *ngIf="!landscape.matches"
+              >
+                <div class="legend-title">
+                  <div class="text-center">Costos</div>
+                </div>
+                <highcharts-chart
+                  *ngIf="!landscape.matches && !loadChart"
+                  class="of-highcharts"
+                  [Highcharts]="Highcharts"
+                  [options]="chartOptionsGnlTRTM"
+                  style="width: 100%; height: 436px; display: block"
+                ></highcharts-chart>
+                <span class="date-label">Fecha: </span>
+              </div>
+              <div
+                class="col-12 hvh-m relative-parent"
+                *ngIf="landscape.matches"
+              >
+                <div class="legend-title legend-title-landscape">
+                  <div class="text-center">Costos</div>
+                </div>
+                <highcharts-chart
+                  *ngIf="landscape.matches && !loadChart"
+                  class="of-highcharts"
+                  [Highcharts]="Highcharts"
+                  [options]="chartOptionsGnlTRTM"
+                  style="width: 100%; height: 436px; display: block"
+                ></highcharts-chart>
+                <span class="date-label">Fecha: </span>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="col-12 mt-5">
+            <div class="title-content text-center">
+              <mat-slide-toggle
+                [(ngModel)]="scrapWarehouseDetailFactory"
+                class="title"
+                color="primary"
+                >Detalle</mat-slide-toggle
+              >
+            </div>
+          </div>
+          <div class="col-12" *ngIf="scrapWarehouseDetailFactory">
+            <mtx-grid
+              [data]="scrapData.machines"
+              [columns]="columns"
+              [length]="length"
+              [pageOnFront]="true"
+              [noResultText]="noResultText"
+              [pageIndex]="query.pageIndex"
+              [pageSize]="query.pageSize"
+              [headerTemplate]="{
+                name: headerTpl,
+                machine: headerTpl,
+                scrapQuantity: headerTpl,
+                scrapCost: headerTpl,
+                gnlCostPercentage: headerTpl,
+                scrapCostPercentage: headerTpl,
+                completedQuantity: headerTpl,
+                gnlScrapPercentage: headerTpl
+              }"
+              [cellTemplate]="{
+                name: nameTpl,
+                machine: machineTpl,
+                scrapQuantity: scrapQuantityTpl,
+                scrapCost: scrapCostPercentageTpl,
+                gnlCostPercentage: gnlCostPercentageTpl,
+                scrapCostPercentage: scrapCostTpl,
+                completedQuantity: completedQuantityTpl,
+                gnlScrapPercentage: gnlScrapPercentageTpl
+              }"
+            >
+              <!-- Header Templates -->
+              <ng-template
+                #headerTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center trmvstm">{{ row?.header }}</div>
+              </ng-template>
+              <!-- Content Templates -->
+              <ng-template #nameTpl let-row let-index="index" let-col="colDef">
+                <div class="text-center">{{ row?.warehouse }}</div>
+              </ng-template>
+              <ng-template
+                #machineTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">{{ row?.machine }}</div>
+              </ng-template>
+              <ng-template
+                #scrapQuantityTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  {{ numberFormat.format(row?.scrapQuantity) }}
+                </div>
+              </ng-template>
+              <ng-template
+                #scrapCostPercentageTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  ${{ numberFormat.format(row?.scrapCost) }}
+                </div>
+              </ng-template>
+              <ng-template
+                #gnlCostPercentageTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  {{ numberFormat.format(row?.scrapCostPercentage) }} %
+                </div>
+              </ng-template>
+              <ng-template
+                #scrapCostTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  {{ numberFormat.format(row?.gnlCostPercentage) }} %
+                </div>
+              </ng-template>
+              <ng-template
+                #completedQuantityTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  {{ numberFormat.format(row?.completedQuantity) }}
+                </div>
+              </ng-template>
+              <ng-template
+                #gnlScrapPercentageTpl
+                let-row
+                let-index="index"
+                let-col="colDef"
+              >
+                <div class="text-center">
+                  {{ numberFormat.format(row?.gnlScrapPercentage) }} %
+                </div>
+              </ng-template>
+            </mtx-grid>
+          </div>
+        </div>
+        <div
+          class="notFound text-center"
+          *ngIf="scrapData.machines.length == 0"
+        >
+          No se encontraron registros.
+        </div>
+      </div>
+      <!-- Fin de grafica por maquina Planta -->
+    </div>
+
+    <div class="col-12">
+      <div class="title-content text-center">
+        <span class="title"
+          >Top 5 Scrap por Molde-Razón: {{ scrapData.factory }} -
+          {{ scrapData.warehouse.name }}</span
+        >
+      </div>
+    </div>
+    <div class="col-12" *ngIf="scrapData.warehouse.moldeRazonItems">
+      <div class="text-center">
+        <span class="title">Scrap por Máquina-Molde-Razón</span>
+      </div>
+    </div>
+
+    <!-- Inicio de grafica por molde nave -->
+    <div class="scrap-molde-warehouse">
+      <div class="ifFound" *ngIf="scrapData.warehouse.moldeRazonItems">
+        <div class="col-12" *ngIf="scrapData.warehouse.moldeRazonItems">
+          <div class="row legend_content">
+            <div
+              class="
+                col-12
+                font-weight-bold
+                d-flex
+                align-items-center
+                justify-content-center
+                legend_padding
+              "
+            >
+              <div class="legend_point legend_point__ordered"></div>
+              <span class="legend_title">Piezas Scrap Nave</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 relative-parent">
+              <div class="legend-title">
+                <div class="text-center">Piezas</div>
+              </div>
+              <highcharts-chart
+                *ngIf="!loadChart"
+                class="of-highcharts"
+                [Highcharts]="Highcharts"
+                [options]="chartOptionsMolde"
+                style="width: 100%; height: 436px; display: block"
+              ></highcharts-chart>
+              <span class="date-label-molde">Fecha: </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="title-content text-center">
+            <mat-slide-toggle
+              [(ngModel)]="scrapWarehouseMoldeDetail"
+              class="title"
+              color="primary"
+              >Detalle</mat-slide-toggle
+            >
+          </div>
+        </div>
+        <div
+          class="col-12"
+          *ngIf="
+            scrapWarehouseMoldeDetail && scrapData.warehouse.moldeRazonItems
+          "
+        >
+          <mtx-grid
+            [data]="scrapData.warehouse.moldeRazonItems"
+            [columns]="columnsMolde"
+            [length]="length"
+            [pageOnFront]="true"
+            [noResultText]="noResultText"
+            [pageIndex]="query.pageIndex"
+            [pageSize]="query.pageSize"
+            [headerTemplate]="{
+              name: headerTpl,
+              machine: headerTpl,
+              mold: headerTpl,
+              reasonCode: headerTpl,
+              articleNumber: headerTpl,
+              scrapPercentage: headerTpl,
+              scrapCost: headerTpl
+            }"
+            [cellTemplate]="{
+              name: nameMoldeTpl,
+              machine: machineMoldeTpl,
+              mold: moldTpl,
+              reasonCode: reasonCodeTpl,
+              articleNumber: articleNumberTpl,
+              scrapPercentage: scrapPercentageTpl,
+              scrapCost: scrapcostTpl
+            }"
+          >
+            <ng-template #headerTpl let-row let-index="index" let-col="colDef">
+              <div class="text-center trmvstm">{{ row?.header }}</div>
+            </ng-template>
+            <!-- Templates de celdas -->
+
+            <ng-template
+              #nameMoldeTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">{{ scrapData.warehouse.name }}</div>
+            </ng-template>
+            <ng-template
+              #machineMoldeTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">{{ row?.machine }}</div>
+            </ng-template>
+            <ng-template #moldTpl let-row let-index="index" let-col="colDef">
+              <div class="text-center">{{ row?.mold }}</div>
+            </ng-template>
+            <ng-template
+              #reasonCodeTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">{{ row?.reasonCode }}</div>
+            </ng-template>
+            <ng-template
+              #articleNumberTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.articleNumber) }}
+              </div>
+            </ng-template>
+            <ng-template
+              #scrapPercentageTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                {{ numberFormat.format(row?.scrapPercentage) }} %
+              </div>
+            </ng-template>
+            <ng-template
+              #scrapcostTpl
+              let-row
+              let-index="index"
+              let-col="colDef"
+            >
+              <div class="text-center">
+                ${{ numberFormat.format(row?.scrapCost) }}
+              </div>
+            </ng-template>
+          </mtx-grid>
+        </div>
+      </div>
+      <div class="notFound text-center" *ngIf="!scrapData.warehouse.moldeRazonItems">
+        No se encontraron Registros
+      </div>
+    </div>
+    <!-- Fin de grafica por molde nave -->
+  </div>
+</div>

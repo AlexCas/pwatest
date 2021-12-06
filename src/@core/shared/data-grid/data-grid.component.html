@@ -1,0 +1,68 @@
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()">
+      </mat-checkbox>
+    </th>
+
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="toggle($event, row)" [checked]="isSelected(row)"
+        [aria-label]="checkboxLabel(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Position Column -->
+  <ng-container *ngFor="let col of columns;">
+    <ng-container [matColumnDef]="col.field">
+
+      <ng-container *ngIf="col.sortable">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-uppercase font-weight-bold"
+          [ngClass]="{'center': col.textAlign ==='center'}" [ngStyle]="{'justify-content':col.textAlign }">
+          {{col.header}}
+        </th>
+      </ng-container>
+      <ng-container *ngIf="!col.sortable">
+        <th mat-header-cell *matHeaderCellDef class="text-uppercase font-weight-bold"
+          [ngClass]="{'center': col.textAlign ==='center' }"> {{col.header}}
+        </th>
+      </ng-container>
+
+      <td mat-cell *matCellDef="let row; let index = index; let dataIndex = dataIndex"
+        [ngStyle]="{'width': col.width, 'text-align':col.textAlign }">
+        <ng-template [ngIf]="cellTemplate && _isTemplateRef(cellTemplate[col.field])" [ngIfElse]="colDefCellTpl">
+          <ng-template [ngTemplateOutlet]="cellTemplate[col.field]"
+            [ngTemplateOutletContext]="{ $implicit: row, rowData: row, index: _getIndex(index, dataIndex), colDef: col }">
+          </ng-template>
+        </ng-template>
+        <ng-template #colDefCellTpl>
+          <ng-template [ngIf]="col.type === 'date'" [ngIfElse]="colDef2CellTpl">
+            {{row[col.field] | date: col.format}}
+          </ng-template>
+          <ng-template #colDef2CellTpl>
+            {{row[col.field]}}
+          </ng-template>
+        </ng-template>
+      </td>
+
+
+    </ng-container>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="toggleSelected(row)">
+  </tr>
+
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">No data matching the filter</td>
+  </tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="pageSizeOptions" (page)="pageEvent($event)" [length]="length" [pageIndex]="pageIndex"
+  [pageSize]="pageSize">
+</mat-paginator>

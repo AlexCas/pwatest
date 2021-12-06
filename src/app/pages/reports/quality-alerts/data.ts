@@ -1,0 +1,58 @@
+export const data = [
+  {
+    factoryId: 'f5d66277-7225-5d74-ab26-39fec1cd621e',
+    warehouseId: '040e1380-6aea-7b6c-f589-39fee3d5befe',
+    factory: null,
+    warehouse: null,
+    startDate: '2021-12-01T00:00:00+00:00',
+    endDate: '2021-12-31T00:00:00+00:00',
+    fileRoot:
+      'CDN/QualityAlert/f5d66277-7225-5d74-ab26-39fec1cd621e/040e1380-6aea-7b6c-f589-39fee3d5befe',
+    fileName: 'ALERTA DE ANTOLIN 171121 2.pdf',
+    alertTypeId: 2,
+    alertType: 'No conformidad auditoría externa',
+    date: '2021-12-02T17:38:37.537+00:00',
+  },
+  {
+    factoryId: 'f5d66277-7225-5d74-ab26-39fec1cd621e',
+    warehouseId: '040e1380-6aea-7b6c-f589-39fee3d5befe',
+    factory: null,
+    warehouse: null,
+    startDate: '2021-12-01T00:00:00+00:00',
+    endDate: '2021-12-31T00:00:00+00:00',
+    fileRoot:
+      'CDN/QualityAlert/f5d66277-7225-5d74-ab26-39fec1cd621e/040e1380-6aea-7b6c-f589-39fee3d5befe',
+    fileName: 'ALERTA DE ANTOLIN 171121.pdf',
+    alertTypeId: 2,
+    alertType: 'No conformidad auditoría externa',
+    date: '2021-12-02T17:49:30.548+00:00',
+  },
+  {
+    factoryId: 'f5d66277-7225-5d74-ab26-39fec1cd621e',
+    warehouseId: '040e1380-6aea-7b6c-f589-39fee3d5befe',
+    factory: null,
+    warehouse: null,
+    startDate: '2021-12-01T00:00:00+00:00',
+    endDate: '2021-12-31T00:00:00+00:00',
+    fileRoot:
+      'CDN/QualityAlert/f5d66277-7225-5d74-ab26-39fec1cd621e/040e1380-6aea-7b6c-f589-39fee3d5befe',
+    fileName: 'ALERTA DE ANTOLIN 181121.pdf',
+    alertTypeId: 3,
+    alertType: 'Reclamo interno',
+    date: '2021-12-02T17:50:20.087+00:00',
+  },
+  {
+    factoryId: 'f5d66277-7225-5d74-ab26-39fec1cd621e',
+    warehouseId: '040e1380-6aea-7b6c-f589-39fee3d5befe',
+    factory: null,
+    warehouse: null,
+    startDate: '2021-12-01T00:00:00+00:00',
+    endDate: '2021-12-31T00:00:00+00:00',
+    fileRoot:
+      'CDN/QualityAlert/f5d66277-7225-5d74-ab26-39fec1cd621e/040e1380-6aea-7b6c-f589-39fee3d5befe',
+    fileName: 'ALERTA DE ANTOLIN 181121 2.pdf',
+    alertTypeId: 4,
+    alertType: 'No conformidad auditoría interna',
+    date: '2021-12-02T17:56:58.858+00:00',
+  },
+];

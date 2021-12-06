@@ -1,0 +1,69 @@
+<div>
+  <mat-card class="bg-container pb-0 pt-0 mt-0">
+    <mat-card-title class="d-flex justify-content-center title">
+      <app-tv-header class="w-100" title="SCRAP"></app-tv-header>
+    </mat-card-title>
+    <mat-card-content *ngIf="scrapData">
+      <div class="row">
+        <div class="col-12 text-center factory-title">
+          <span class="factory-border"
+            >Top 5 Total Scrap: {{ scrapData.factory }} - {{
+            scrapData.warehouse.name }}</span
+          >
+        </div>
+        <div class="col-10">
+          <app-factory-scrap
+            [factory]="scrapData.warehouse"
+            type="warehouse"
+          ></app-factory-scrap>
+        </div>
+        <div class="col-2">
+          <div
+            class="
+              row
+              d-flex
+              flex-column
+              legend-container
+              d-flex
+              justify-content-center
+            "
+          >
+            <span class="subtitle mt-3">Scrap por Máquina</span>
+            <div class="d-flex justify-content-arround align-items-center mt-3">
+              <div class="legend_point legend_point__warehouse"></div>
+              <span class="legend-title">Costos Scrap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row scrap-dotted">
+        <div class="col-12 text-center factory-title">
+          <span class="factory-border"
+            >Top 5 Total Scrap: Planta {{ scrapData.factory }}</span
+          >
+        </div>
+        <div class="col-10">
+          <app-factory-scrap [factory]="scrapData"></app-factory-scrap>
+        </div>
+        <div class="col-2">
+          <div
+            class="
+              row
+              d-flex
+              flex-column
+              legend-container
+              d-flex
+              justify-content-center
+            "
+          >
+            <span class="subtitle mt-3">Scrap por Máquina</span>
+            <div class="d-flex justify-content-arround align-items-center mt-3">
+              <div class="legend_point legend_point__factory"></div>
+              <span class="legend-title">Costos Scrap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

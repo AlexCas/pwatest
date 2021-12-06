@@ -1,0 +1,325 @@
+@use "sass:math";
+//bootstrap
+// Configuration
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+@import "node_modules/bootstrap/scss/utilities";
+// Layout & components
+@import "node_modules/bootstrap/scss/root";
+@import "node_modules/bootstrap/scss/reboot";
+@import "node_modules/bootstrap/scss/type";
+@import "node_modules/bootstrap/scss/images";
+@import "node_modules/bootstrap/scss/grid";
+// Helpers
+@import "node_modules/bootstrap/scss/helpers";
+// Utilities
+@import "node_modules/bootstrap/scss/utilities/api";
+//bootstrap
+/* You can add global styles to this file, and also import other style files */
+@import "./@core/styles/core";
+@import "./app/app.theme";
+@import "./styles/vendors/custom-bootstrap.scss";
+
+//custom ngx-charts
+@import "./styles/ngxCharts/custom-ngx-charts.scss";
+@import "~ngx-owl-carousel-o/lib/styles/scss/owl.carousel";
+@import "~ngx-owl-carousel-o/lib/styles/scss/owl.theme.default";
+
+$alert-danger: #df5353;
+$warning-alert: #dddf0d;
+$success-alert: #55bf3b;
+
+.auth-logo-perti {
+  width: 85px;
+}
+
+table {
+  thead tr {
+    background-color: #ffffff !important;
+    th {
+      text-transform: uppercase;
+      color: #283144 !important;
+    }
+  }
+}
+
+.mtx-grid-footer {
+  .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: transparent;
+  }
+}
+.mtx-grid .mat-row:last-of-type .mat-cell {
+  border-bottom-width: 1px !important;
+}
+
+.mtx-grid-no-result {
+  min-height: 50px !important;
+}
+
+.highcharts-credits {
+  display: none !important;
+}
+
+.highcharts-container {
+  overflow: visible !important;
+  margin: 0 auto;
+}
+
+.mat-card-border {
+  border-radius: 25px !important;
+}
+
+.chartLabel {
+  overflow: visible !important;
+}
+
+.page {
+  width: 910px !important;
+  display: flex;
+  justify-content: center;
+  margin: 0 !important;
+}
+
+.labels-container {
+  text-align: center;
+  &-percent {
+    font-size: 15px;
+    color: black;
+  }
+  &-percent-mobile {
+    font-size: 9px;
+    color: black;
+  }
+  &-machine {
+    font-size: 15px;
+  }
+}
+
+.highchart-overflow {
+  overflow: visible !important;
+  margin-bottom: 2vh;
+}
+
+.scrap-category {
+  margin-left: -13.5vh;
+}
+
+.scrap-category-mobile {
+  margin-left: -13.3vh;
+}
+
+.deadtime-category {
+  margin-left: -12vh;
+}
+
+.scrap-factory {
+  margin-left: -12.5vh;
+}
+
+.text-center-scrap {
+  width: 25vh !important;
+  padding-right: 10px;
+}
+
+.text-center-deadTime {
+  width: 28vh !important;
+}
+
+.text-center-gscrap {
+  width: 28vh !important;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.factory-text {
+  font-weight: bold;
+  font-size: 1vh;
+}
+
+.warehouse-alert {
+  width: 100%;
+  height: 10px;
+  margin-left: 5px;
+  &__100 {
+    background-color: #df5353;
+  }
+  &__200 {
+    background-color: #dddf0d;
+  }
+  &__300 {
+    background-color: #55bf3b;
+  }
+}
+
+.warehouse-alert-mobile {
+  width: 20%;
+  height: 7px;
+  margin-left: 5px;
+}
+
+.col-warehouse-alert {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-pattern {
+  background: none !important;
+}
+
+.highcharts-axis-labels .highcharts-xaxis-labels > span {
+  overflow: visible !important;
+}
+
+.scrap-machine {
+  font-size: 1.5vh;
+  font-weight: bold;
+  color: #223ea2;
+}
+
+.scrap-machine-mobile {
+  font-size: 8px;
+  font-weight: bold;
+  color: #223ea2;
+}
+
+.scrap-subtitle {
+  font-size: 1.5vh;
+}
+
+.scrap-subtitle-mobile {
+  font-size: 6px;
+}
+
+.supplies-subtitle {
+  font-size: 1.3vh;
+  font-weight: bold;
+}
+
+.scrap-label-percentage {
+  font-size: 0.8em;
+}
+
+.scrap-label-percentage-mobile {
+  font-size: 10px;
+}
+
+.labels-container-percent {
+  font-size: 10px;
+}
+
+.scrap-label-absolute {
+  top: -44px;
+  left: -31px;
+  position: absolute;
+}
+
+.scrap-label-absolute-mobile {
+  top: -29px;
+  left: -29px;
+  position: absolute;
+}
+
+.time-label-absolute {
+  top: -25px;
+  left: -17px;
+  position: absolute;
+}
+
+.supllies-row {
+  position: absolute;
+  right: -43px;
+}
+
+.indicator-color {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  &-100 {
+    color: white;
+    background-color: $alert-danger;
+  }
+  &-200 {
+    background-color: $warning-alert;
+  }
+  &-300 {
+    background-color: $success-alert;
+  }
+}
+
+.indicator-color-mobile {
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  &-100 {
+    color: white;
+    background-color: $alert-danger;
+  }
+  &-200 {
+    background-color: $warning-alert;
+  }
+  &-300 {
+    background-color: $success-alert;
+  }
+}
+
+.production-label {
+  width: 120px;
+  text-align: center;
+  bottom: 0px !important;
+}
+
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.mat-expansion-indicator::after {
+  color: white !important;
+}
+
+.tp-title {
+  font-size: 7.5px;
+  color: #223ea2;
+  font-weight: bold;
+}
+
+.tp-subtitle {
+  font-size: 7.5px;
+}
+
+.tp-subtitle-reason {
+  font-size: 6px;
+  width: 100%;
+  text-align: center;
+  color: #223ea2;
+}
+
+.scrap-molde-mobile-percentage {
+  font-size: 10px;
+  color: #223ea2;
+}
+
+.scrap-molde-mobile-article {
+  font-size: 9px;
+}
+
+.scrap-label-molde-absolute {
+  top: -12px;
+  left: -9px;
+  position: absolute;
+}
+
+.supp-machine {
+  font-size: 8px;
+  color: #223ea2;
+  font-weight: bold;  
+}
+
+.supp-subtitle {
+  font-size: 5px;
+}
+
+.mat-header-cell {
+  border: 0 !important;
+}

@@ -1,0 +1,646 @@
+<div class="content-supplies" *ngIf="suppliesData">
+  <div class="row">
+    <div class="col-12">
+      <app-tv-header
+        title="Surtimiento de Materiales"
+        backButton="/"
+      ></app-tv-header>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <mat-accordion>
+        <mat-expansion-panel
+          class="expansion-panel"
+          [expanded]="filterOpen"
+          (opened)="filterOpen = true"
+          (closed)="filterOpen = false"
+        >
+          <mat-expansion-panel-header class="expansion-header">
+            Filtros
+          </mat-expansion-panel-header>
+          <form
+            [formGroup]="form"
+            (ngSubmit)="onSubmit()"
+            *ngIf="
+              rolePermissionsData &&
+              !machinesSwitch &&
+              !folioSwitch &&
+              !orderSwitch &&
+              !orderParentSwitch &&
+              !childSwitch
+            "
+          >
+            <div class="row">
+              <div class="col-12">
+                <mat-form-field class="w-100" appearance="standard">
+                  <mat-label>Planta</mat-label>
+                  <mat-select
+                    formControlName="factoryId"
+                    (selectionChange)="onFactoryChange($event)"
+                    required
+                  >
+                    <mat-option
+                      *ngFor="let item of rolePermissionsData.factories"
+                      [value]="item"
+                    >
+                      {{ item?.factoryName }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-12" *ngIf="factorySelected">
+                <mat-form-field class="w-100" appearance="standard">
+                  <mat-label>Nave</mat-label>
+                  <mat-select
+                    formControlName="warehouseId"
+                    (selectionChange)="onWarehouseChange()"
+                    required
+                  >
+                    <mat-option
+                      *ngFor="let item of factorySelected.warehouses"
+                      [value]="item.warehouseId"
+                    >
+                      {{ item?.warehouseName }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                </mat-form-field>
+              </div>
+              <mat-divider class="mb-3"></mat-divider>
+              <div class="col-6">
+                <mat-form-field appearance="fill" class="oee-field">
+                  <mat-label>Fecha Inicio:</mat-label>
+                  <input
+                    formControlName="startDate"
+                    matInput
+                    [matDatepicker]="startDate"
+                  />
+                  <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="startDate"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #startDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-6">
+                <mat-form-field appearance="fill" class="oee-field">
+                  <mat-label>Fecha Fin:</mat-label>
+                  <input
+                    formControlName="endDate"
+                    matInput
+                    [matDatepicker]="endDate"
+                  />
+                  <mat-error> {{ appMessage.FIELD_REQUIRED }} </mat-error>
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="endDate"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #endDate></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6 my-3 text-left">
+                <span class="machine-title-form">Máquina</span>
+              </div>
+              <div class="col-6 my-3 text-end" (click)="switchMachine()">
+                <span class="aligned-with-icon">{{
+                  machineSelected.length > 0
+                    ? machineSelected[0].machine +
+                      " - " +
+                      machineSelected[machineSelected.length - 1].machine
+                    : "Seleccionar"
+                }}</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6 my-3 text-left">
+                <span class="machine-title-form">Folio de Solicitud</span>
+              </div>
+              <div class="col-6 my-3 text-end" (click)="switchFolio()">
+                <span class="aligned-with-icon">{{
+                  folioSelected.length > 0
+                    ? folioSelected[0] +
+                      " - " +
+                      folioSelected[folioSelected.length - 1]
+                    : "Seleccionar"
+                }}</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6 my-3 text-left">
+                <span class="machine-title-form">No. Orden</span>
+              </div>
+              <div class="col-6 my-3 text-end" (click)="switchOrder()">
+                <span class="aligned-with-icon">{{
+                  orderSelected.length > 0
+                    ? orderSelected[0] +
+                      " - " +
+                      orderSelected[orderSelected.length - 1]
+                    : "Seleccionar"
+                }}</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6 my-3 text-left">
+                <span class="machine-title-form">No. Parte Padre</span>
+              </div>
+              <div class="col-6 my-3 text-end" (click)="switchParent()">
+                <span class="aligned-with-icon">{{
+                  parentSelected.length > 0
+                    ? parentSelected[0] +
+                      " - " +
+                      parentSelected[parentSelected.length - 1]
+                    : "Seleccionar"
+                }}</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6 my-3 text-left">
+                <span class="machine-title-form">No. Parte Componente</span>
+              </div>
+              <div class="col-6 my-3 text-end" (click)="switchChild()">
+                <span class="aligned-with-icon">{{
+                  childSelected.length > 0
+                    ? childSelected[0] +
+                      " - " +
+                      childSelected[childSelected.length - 1]
+                    : "Seleccionar"
+                }}</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="col-6">
+                <div class="my-3 text-center">
+                  <button
+                    (click)="cleanValues($event)"
+                    color="secondary"
+                    mat-raised-button
+                  >
+                    <mat-icon>clear</mat-icon>
+                    <span> Limpiar</span>
+                  </button>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="my-3 text-center">
+                  <button type="submit" color="primary" mat-raised-button>
+                    <mat-icon>search</mat-icon>
+                    <span> Buscar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="row" *ngIf="machinesSwitch">
+            <div
+              (click)="backToForm($event)"
+              class="col-12 d-flex justify-content-between machine-title"
+            >
+              <mat-icon>keyboard_arrow_left</mat-icon>
+              <span>Seleccionar Máquina</span>
+            </div>
+            <div class="col-12">
+              <li class="machine-item">
+                <mat-checkbox
+                  [checked]="selectedAllMachines"
+                  (change)="selectAllMachines()"
+                >
+                  Seleccionar Todas
+                </mat-checkbox>
+              </li>
+              <li class="machine-item" *ngFor="let machine of machineList">
+                <mat-checkbox
+                  [checked]="checkMachine(machine)"
+                  (change)="selectMachine(machine, $event.checked)"
+                >
+                  {{ machine.machine }}
+                </mat-checkbox>
+              </li>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanMachines($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="backToForm($event)"
+                  color="primary"
+                  mat-raised-button
+                >
+                  <span> Aceptar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="folioSwitch">
+            <div
+              (click)="backToForm($event)"
+              class="col-12 d-flex justify-content-between machine-title"
+            >
+              <mat-icon>keyboard_arrow_left</mat-icon>
+              <span>Seleccionar Folios</span>
+            </div>
+            <div class="col-12">
+              <li class="machine-item">
+                <mat-checkbox
+                  [checked]="selectedAllFolios"
+                  (change)="selectAllFolios()"
+                >
+                  Seleccionar Todas
+                </mat-checkbox>
+              </li>
+              <li class="machine-item" *ngFor="let folio of folioList">
+                <mat-checkbox
+                  [checked]="checkFolios(folio)"
+                  (change)="selectFolios2(folio, $event.checked)"
+                >
+                  {{ folio }}
+                </mat-checkbox>
+              </li>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanFolios($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="backToForm($event)"
+                  color="primary"
+                  mat-raised-button
+                >
+                  <span> Aceptar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="orderSwitch">
+            <div
+              (click)="backToForm($event)"
+              class="col-12 d-flex justify-content-between machine-title"
+            >
+              <mat-icon>keyboard_arrow_left</mat-icon>
+              <span>Seleccionar Ordenes</span>
+            </div>
+            <div class="col-12">
+              <li class="machine-item">
+                <mat-checkbox
+                  [checked]="selectedAllOrders"
+                  (change)="selectAllOrders()"
+                >
+                  Seleccionar Todas
+                </mat-checkbox>
+              </li>
+              <li class="machine-item" *ngFor="let order of orderList">
+                <mat-checkbox
+                  [checked]="checkOrders(order)"
+                  (change)="selectOrders2(order, $event.checked)"
+                >
+                  {{ order }}
+                </mat-checkbox>
+              </li>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanOrders($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="backToForm($event)"
+                  color="primary"
+                  mat-raised-button
+                >
+                  <span> Aceptar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="orderParentSwitch">
+            <div
+              (click)="backToForm($event)"
+              class="col-12 d-flex justify-content-between machine-title"
+            >
+              <mat-icon>keyboard_arrow_left</mat-icon>
+              <span>Seleccionar No. Parte Padre</span>
+            </div>
+            <div class="col-12">
+              <li class="machine-item">
+                <mat-checkbox
+                  [checked]="selectedAllParent"
+                  (change)="selectAllParent()"
+                >
+                  Seleccionar Todas
+                </mat-checkbox>
+              </li>
+              <li class="machine-item" *ngFor="let parent of parentList">
+                <mat-checkbox
+                  [checked]="checkParent(parent)"
+                  (change)="selectParent2(parent, $event.checked)"
+                >
+                  {{ parent }}
+                </mat-checkbox>
+              </li>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanParent($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="backToForm($event)"
+                  color="primary"
+                  mat-raised-button
+                >
+                  <span> Aceptar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="childSwitch">
+            <div
+              (click)="backToForm($event)"
+              class="col-12 d-flex justify-content-between machine-title"
+            >
+              <mat-icon>keyboard_arrow_left</mat-icon>
+              <span>Seleccionar No. Parte Padre</span>
+            </div>
+            <div class="col-12">
+              <li class="machine-item">
+                <mat-checkbox
+                  [checked]="selectedAllChild"
+                  (change)="selectAllChild()"
+                >
+                  Seleccionar Todas
+                </mat-checkbox>
+              </li>
+              <li class="machine-item" *ngFor="let child of childList">
+                <mat-checkbox
+                  [checked]="checkChild(child)"
+                  (change)="selectChild2(child, $event.checked)"
+                >
+                  {{ child }}
+                </mat-checkbox>
+              </li>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="cleanChild($event)"
+                  color="secondary"
+                  mat-raised-button
+                >
+                  <span> Limpiar</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="my-3 text-center">
+                <button
+                  (click)="backToForm($event)"
+                  color="primary"
+                  mat-raised-button
+                >
+                  <span> Aceptar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="col-12">
+      <div class="title-content text-center" *ngIf="rolePermissionsData">
+        <span class="title">Planta {{ suppliesData.factory ? suppliesData.factory : getFactoryName() }}</span>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="row">
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          No. Solicitudes: {{ suppliesData.totalRequested }}
+        </div>
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          No. Surtidos: {{ suppliesData.totalSupplied }}
+        </div>
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          Por Surtir: {{ suppliesData.totalPending }}
+        </div>
+        <mat-divider></mat-divider>
+        <div class="col-12">
+          <div class="title-content text-center" *ngIf="rolePermissionsData">
+            <span class="title">{{ suppliesData?.warehouses.length > 0 ? suppliesData.warehouses[0].name : getWarehouseName() }}</span>
+          </div>
+        </div>
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          No. Solicitudes: {{ suppliesData.warehouses[0].totalRequested }}
+        </div>
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          No. Surtidos: {{ suppliesData.warehouses[0].totalSupplied }}
+        </div>
+        <div class="col-4 text-center supply-total" *ngIf="suppliesData && suppliesData.factory">
+          Por Surtir: {{ suppliesData.warehouses[0].totalPending }}
+        </div>
+        <mat-divider></mat-divider>
+        <div class="col-12" *ngIf="suppliesData.pendingSupplies.length > 0">
+          <div
+            class="
+              d-flex
+              justify-content-center
+              align-items-center
+              percent-title
+            "
+          >
+            <div class="legend_point legend_point__supply_red"></div>
+            <div class="legend_point legend_point__supply_yellow"></div>
+            <div class="legend_point legend_point__supply_green"></div>
+            Porcentaje de surtimiento
+          </div>
+          <div
+            [class]="
+              'legend-title ' +
+              (landscape.matches ? 'legend-title-landscape' : '')
+            "
+          >
+            <div class="text-center">Porcentaje</div>
+          </div>
+          <highcharts-chart
+            class="highchart-overflow"
+            [Highcharts]="Highcharts"
+            [options]="chartOptionsSupplies"
+            style="width: 100%; height: 28vh; display: block"
+          ></highcharts-chart>
+        </div>
+      </div>
+      <div class="row" *ngIf="!suppliesData || !suppliesData.factory">
+        <div class="col-12 text-center">
+          {{ messageError }}
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="title-content text-center">
+        <mat-slide-toggle
+          [(ngModel)]="suppliesPendingChecked"
+          class="title"
+          color="primary"
+          >Detalle</mat-slide-toggle
+        >
+      </div>
+    </div>
+    <div class="col-12" *ngIf="suppliesPendingChecked">
+      <div class="text-center">
+        <span class="title">Reporte Surtimientos Pendientes</span>
+      </div>
+    </div>
+    <div class="text-center" *ngIf="suppliesData.pendingSupplies.length == 0">
+      No se encontraron registros.
+    </div>
+    <div class="col-12" *ngIf="suppliesPendingChecked && suppliesData.pendingSupplies.length > 0">
+      <mtx-grid
+        [data]="
+          suppliesData.pendingSupplies ? suppliesData.pendingSupplies : []
+        "
+        [columns]="columns"
+        [length]="length"
+        [pageOnFront]="true"
+        [noResultText]="noResultText"
+        [pageIndex]="query.pageIndex"
+        [pageSize]="query.pageSize"
+        [headerTemplate]="{
+          name: headerTpl,
+          folio: headerTpl,
+          order: headerTpl,
+          itemNumFather: headerTpl,
+          itemNumFatherDescr: headerTpl,
+          machine: headerTpl,
+          itemNumComp: headerTpl,
+          itemNumCompDescr: headerTpl,
+          totalRequested: headerTpl,
+          totalSupplied: headerTpl,
+          totalPending: headerTpl
+        }"
+        [cellTemplate]="{
+          name: nameTpl,
+          folio: folioTpl,
+          order: orderTpl,
+          itemNumFather: itemNumFatherTpl,
+          itemNumFatherDescr: itemNumFatherDescrTpl,
+          machine: machineTpl,
+          itemNumComp: itemNumCompTpl,
+          itemNumCompDescr: itemNumCompDescrTpl,
+          totalRequested: totalRequestedTpl,
+          totalSupplied: totalSuppliedTpl,
+          totalPending: totalPendingTpl
+        }"
+      >
+        <ng-template #headerTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center trmvstm">{{ row?.header }}</div>
+        </ng-template>
+        <!-- Columns -->
+        <ng-template #nameTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center">{{ suppliesData.warehouses[0].name }}</div>
+        </ng-template>
+        <ng-template #folioTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center">{{ row?.folio }}</div>
+        </ng-template>
+        <ng-template #orderTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center">{{ row?.order }}</div>
+        </ng-template>
+        <ng-template
+          #itemNumFatherTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div class="text-center">{{ row?.itemNumFather }}</div>
+        </ng-template>
+        <ng-template
+          #itemNumFatherDescrTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div class="text-center">{{ row?.itemNumFatherDescr }}</div>
+        </ng-template>
+        <ng-template #machineTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center">{{ row?.machine }}</div>
+        </ng-template>
+        <ng-template #itemNumCompTpl let-row let-index="index" let-col="colDef">
+          <div class="text-center">{{ row?.itemNumComp }}</div>
+        </ng-template>
+        <ng-template
+          #itemNumCompDescrTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div class="text-center">{{ row?.itemNumCompDescr }}</div>
+        </ng-template>
+        <ng-template
+          #totalRequestedTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div class="text-center">{{ row?.totalRequested }}</div>
+        </ng-template>
+        <ng-template
+          #totalSuppliedTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div class="text-center">{{ row?.totalSupplied }}</div>
+        </ng-template>
+        <ng-template
+          #totalPendingTpl
+          let-row
+          let-index="index"
+          let-col="colDef"
+        >
+          <div
+            [class]="
+              'text-center ' +
+              (row?.totalPending == 0 ? 'blink-300' : 'blink-' + row?.colorId)
+            "
+          >
+            {{ row?.totalPending }}
+          </div>
+        </ng-template>
+      </mtx-grid>
+    </div>
+  </div>
+</div>

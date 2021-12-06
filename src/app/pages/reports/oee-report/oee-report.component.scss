@@ -1,0 +1,24 @@
+$primary-color: #223ea2;
+
+.title {
+  font-size: 3.2vh;
+  font-weight: bold;
+  color: $primary-color;
+  border-bottom: 3px solid $primary-color;
+  padding-bottom: 10px;
+}
+.bg-container {
+  border: none;
+  box-shadow: none;
+}
+
+.factory-title {
+  color: $primary-color;
+  font-size: 2.5vh;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.factory-border {
+  border-bottom: 2px solid $primary-color;
+}

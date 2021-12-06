@@ -1,0 +1,46 @@
+$container-max-width-c: 60%;
+$container-max-widths-c: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 85%,
+  xxl: 70%,
+);
+
+@if $enable-grid-classes {
+  // Single container class with breakpoint max-widths
+  .page-container,
+    // 100% wide container at all breakpoints
+    .container-fluid {
+    @include make-container();
+  }
+
+  // Responsive containers that are 100% wide until a breakpoint
+  @each $breakpoint, $container-max-width-c in $container-max-widths-c {
+    .page-container-#{$breakpoint} {
+      @extend .container-fluid;
+    }
+
+    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+      %responsive-container-#{$breakpoint} {
+        max-width: $container-max-width-c;
+      }
+
+      // Extend each breakpoint which is smaller or equal to the current breakpoint
+      $extend-breakpoint: true;
+
+      @each $name, $width in $grid-breakpoints {
+        @if ($extend-breakpoint) {
+          .page-container#{breakpoint-infix($name, $grid-breakpoints)} {
+            @extend %responsive-container-#{$breakpoint};
+          }
+
+          // Once the current breakpoint is reached, stop extending
+          @if ($breakpoint == $name) {
+            $extend-breakpoint: false;
+          }
+        }
+      }
+    }
+  }
+}
