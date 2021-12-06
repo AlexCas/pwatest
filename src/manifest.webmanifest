@@ -1,8 +1,8 @@
 {
-  "name": "PokéDex",
-  "short_name": "PokéDex",
-  "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
+  "name": "pwaproject",
+  "short_name": "pwaproject",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

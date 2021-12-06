@@ -12,40 +12,17 @@
           "/manifest.webmanifest",
           "/*.css",
           "/*.js"
-        ],
-        "urls": [
-          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/**/*"
         ]
       }
     },
     {
       "name": "assets",
-      "installMode": "prefetch",
+      "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/type-icons/png/*.png",
-          "/assets/*.png",
-          "/assets/thumbnails-compressed/*.png",
-          "/assets/damage-category-icons/*.png",
-          "/assets/**/*.json",
-          "/assets/**/*.csv",
-          "/assets/Fonts/AlleynW01-Regular/AlleynW01-Regular.woff2"
-        ]
-      }
-    },
-    {
-      "name": "fonts-and-icons",
-      "installMode": "lazy",
-      "updateMode": "lazy",
-      "resources": {
-        "files": [
-          "/assets/icons/*.png",
-          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)",
-          "/assets/Fonts/AlleynW01-Regular/*.(eot|svg|ttf|woff)"
-        ],
-        "urls": [
-          "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/*.png"
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]
       }
     }
